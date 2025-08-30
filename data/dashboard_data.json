@@ -1,1 +1,38 @@
-{"ts": 0, "avg_travel_time": 150.0, "avg_wait_time": 30.0, "vehicles_in_system": 500, "baseline_avg_travel_time": 165.0, "selected_intersection": "int_1", "intersections": {"int_1": {"current_phase": 0, "queues": [5, 3, 7, 2]}}, "time_series": {"t": [0, 10, 20, 30], "rl_avg_travel_time": [170, 165, 160, 155], "baseline_avg_travel_time": [170, 169, 168, 167]}, "latest_frame_path": ""}
+{
+  "ts": 0,
+  "avg_travel_time": 150.0,
+  "avg_wait_time": 30.0,
+  "vehicles_in_system": 500,
+  "baseline_avg_travel_time": 165.0,
+  "selected_intersection": "intersection_1",
+  "intersections": {
+    "intersection_1": {
+      "current_phase": 0,
+      "queues": [3, 8, 5, 2],
+      "name": "Main St & Oak Ave"
+    },
+    "intersection_2": {
+      "current_phase": 1,
+      "queues": [7, 4, 9, 1],
+      "name": "First St & Elm St"
+    },
+    "intersection_3": {
+      "current_phase": 2,
+      "queues": [2, 6, 3, 4],
+      "name": "Broadway & Pine St"
+    }
+  },
+  "time_series": {
+    "t": [0, 10, 20, 30, 40, 50],
+    "rl_avg_travel_time": [170, 165, 160, 155, 152, 150],
+    "baseline_avg_travel_time": [170, 169, 168, 167, 166, 165]
+  },
+  "latest_frame_path": "",
+  "traffic_phases": {
+    "0": "North-South Green",
+    "1": "East-West Green",
+    "2": "All Red (Transition)",
+    "3": "North-South Yellow",
+    "4": "East-West Yellow"
+  }
+}

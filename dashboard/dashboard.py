@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from components import kpi_row, intersection_panel, time_series_panel, video_panel
+from components import kpi_row, intersection_panel, time_series_panel, video_panel, intersection_map
 
 st.set_page_config(page_title="Traffic Dashboard", layout="wide")
 st.title("🚦 AI Traffic Management Dashboard")
@@ -29,11 +29,14 @@ if not data:
 # Layout: KPIs top
 kpi_row(data)
 
-# Layout: two columns
-left, right = st.columns([3, 2])
+# Layout: three columns
+left, middle, right = st.columns([2, 2, 1])
 
 with left:
     video_panel(data)
+
+with middle:
+    intersection_map(data)
 
 with right:
     intersection_panel(data)
