@@ -8,43 +8,7 @@ import plotly.express as px
 import numpy as np
 
 def kpi_row(d):
-    """Enhanced KPI metrics with better styling"""
-    st.markdown("### 📊 Real-Time Performance Metrics")
-    
-    # Custom CSS for metrics
-    st.markdown("""
-    <style>
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1rem;
-        border-radius: 10px;
-        color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 0.5rem 0;
-    }
-    .metric-label {
-        font-size: 1rem;
-        opacity: 0.8;
-        margin-bottom: 0.5rem;
-    }
-    .metric-delta {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-    .positive-delta {
-        color: #4CAF50;
-    }
-    .negative-delta {
-        color: #FF5722;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    """Modern dark-themed KPI metrics with FontAwesome icons"""
     
     baseline = d.get("baseline_avg_travel_time") or 1e-9
     delta = (1 - d["avg_travel_time"]/baseline) * 100
@@ -52,86 +16,88 @@ def kpi_row(d):
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        delta_class = "positive-delta" if delta > 0 else "negative-delta"
-        delta_icon = "📈" if delta > 0 else "📉"
+        delta_class = "delta-positive" if delta > 0 else "delta-negative"
+        delta_icon = "fa-arrow-up" if delta > 0 else "fa-arrow-down"
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">🚗 Average Travel Time</div>
+            <div class="metric-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="metric-label">Average Travel Time</div>
             <div class="metric-value">{d['avg_travel_time']:.1f}s</div>
-            <div class="metric-delta {delta_class}">{delta_icon} {delta:.1f}% vs baseline</div>
+            <div class="metric-delta {delta_class}">
+                <i class="fas {delta_icon}"></i> {abs(delta):.1f}% vs baseline
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
-        wait_status = "🟢" if d['avg_wait_time'] < 20 else "🟡" if d['avg_wait_time'] < 40 else "🔴"
+        wait_status = "delta-positive" if d['avg_wait_time'] < 20 else "delta-neutral" if d['avg_wait_time'] < 40 else "delta-negative"
+        wait_icon = "fa-check" if d['avg_wait_time'] < 20 else "fa-exclamation" if d['avg_wait_time'] < 40 else "fa-times"
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">⏱️ Average Wait Time</div>
+            <div class="metric-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="metric-label">Average Wait Time</div>
             <div class="metric-value">{d['avg_wait_time']:.1f}s</div>
-            <div class="metric-delta">{wait_status} Status</div>
+            <div class="metric-delta {wait_status}">
+                <i class="fas {wait_icon}"></i> Status
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         vehicle_density = "Low" if d['vehicles_in_system'] < 300 else "Medium" if d['vehicles_in_system'] < 600 else "High"
-        density_icon = "🟢" if vehicle_density == "Low" else "🟡" if vehicle_density == "Medium" else "🔴"
+        density_class = "delta-positive" if vehicle_density == "Low" else "delta-neutral" if vehicle_density == "Medium" else "delta-negative"
+        density_icon = "fa-leaf" if vehicle_density == "Low" else "fa-balance-scale" if vehicle_density == "Medium" else "fa-exclamation-triangle"
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">🚙 Vehicles in System</div>
+            <div class="metric-icon">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="metric-label">Vehicles in System</div>
             <div class="metric-value">{d['vehicles_in_system']}</div>
-            <div class="metric-delta">{density_icon} {vehicle_density} Density</div>
+            <div class="metric-delta {density_class}">
+                <i class="fas {density_icon}"></i> {vehicle_density} Density
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with col4:
         efficiency = (baseline - d['avg_travel_time']) / baseline * 100
-        efficiency_icon = "🎯" if efficiency > 10 else "⚡" if efficiency > 0 else "⚠️"
+        efficiency_class = "delta-positive" if efficiency > 10 else "delta-neutral" if efficiency > 0 else "delta-negative"
+        efficiency_icon = "fa-rocket" if efficiency > 10 else "fa-chart-line" if efficiency > 0 else "fa-exclamation"
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">⚡ AI Efficiency</div>
+            <div class="metric-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="metric-label">AI Efficiency</div>
             <div class="metric-value">{efficiency:.1f}%</div>
-            <div class="metric-delta">{efficiency_icon} Optimization</div>
+            <div class="metric-delta {efficiency_class}">
+                <i class="fas {efficiency_icon}"></i> Optimization
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
 def intersection_panel(d):
-    """Enhanced intersection selection panel with modern styling"""
-    st.markdown("### 🚦 Intersection Control Panel")
-    
-    # Custom styling for the panel
-    st.markdown("""
-    <style>
-    .intersection-card {
-        background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        color: white;
-        margin: 1rem 0;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    .phase-indicator {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.8rem;
-        border-radius: 10px;
-        margin: 1rem 0;
-        text-align: center;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-    .queue-bar {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        padding: 1rem;
-        margin-top: 1rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    """Modern dark-themed intersection control panel with FontAwesome icons"""
     
     ints = list(d["intersections"].keys())
     
-    # Intersection selector with enhanced styling
-    st.markdown("**Select Intersection:**")
+    # Modern intersection selector
+    st.markdown("""
+    <div style="margin-bottom: 1.5rem;">
+        <label style="color: #9ca3af; font-size: 0.9rem; text-transform: uppercase; 
+                      letter-spacing: 0.5px; margin-bottom: 0.5rem; display: block;">
+            <i class="fas fa-map-marker-alt"></i> Select Intersection
+        </label>
+    </div>
+    """, unsafe_allow_html=True)
+    
     picked = st.selectbox(
-        "Choose intersection to monitor:",
+        "Choose intersection:",
         ints, 
         index=ints.index(d.get("selected_intersection", ints[0])),
         label_visibility="collapsed"
@@ -140,23 +106,45 @@ def intersection_panel(d):
     node = d["intersections"][picked]
     intersection_name = node.get("name", picked.replace("_", " ").title())
     
-    # Display intersection info in a styled card
+    # Modern intersection info card
+    current_phase = node['current_phase']
+    phase_info = get_phase_info(current_phase)
+    
     st.markdown(f"""
-    <div class="intersection-card">
-        <h3>🏗️ {intersection_name}</h3>
-        <div class="phase-indicator">
-            <h4>Current Traffic Phase</h4>
-            <h2>Phase {node['current_phase']}</h2>
-            <p>{get_phase_description(node['current_phase'])}</p>
+    <div style="background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); 
+                border: 1px solid #404040; border-radius: 12px; padding: 1.5rem; margin: 1rem 0;">
+        <h3 style="color: #ffffff; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-intersection"></i> {intersection_name}
+        </h3>
+        <div style="background: {phase_info['bg_color']}; border: 1px solid {phase_info['border_color']}; 
+                    border-radius: 8px; padding: 1rem; text-align: center;">
+            <div style="color: {phase_info['text_color']}; font-size: 1rem; margin-bottom: 0.5rem;">
+                <i class="{phase_info['icon']}"></i> Current Phase
+            </div>
+            <div style="color: #ffffff; font-size: 1.5rem; font-weight: 700;">
+                Phase {current_phase}
+            </div>
+            <div style="color: {phase_info['text_color']}; font-size: 0.9rem; margin-top: 0.5rem;">
+                {phase_info['description']}
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Enhanced queue visualization
-    st.markdown("**🚗 Lane Queue Status**")
-    directions = ["North", "East", "South", "West"]
-    queue_data = []
+    # Modern queue visualization
+    st.markdown("""
+    <div style="margin: 1.5rem 0 1rem 0;">
+        <h4 style="color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-road"></i> Lane Queue Status
+        </h4>
+    </div>
+    """, unsafe_allow_html=True)
     
+    directions = ["North", "East", "South", "West"]
+    direction_icons = ["fa-arrow-up", "fa-arrow-right", "fa-arrow-down", "fa-arrow-left"]
+    
+    # Enhanced bar chart with dark theme
+    queue_data = []
     for i, (direction, queue_len) in enumerate(zip(directions, node["queues"])):
         queue_data.append({
             "Direction": direction,
@@ -166,57 +154,135 @@ def intersection_panel(d):
     
     df = pd.DataFrame(queue_data)
     
-    # Create enhanced bar chart
+    # Create modern bar chart
     fig = px.bar(
         df, 
         x="Direction", 
         y="Queue Length",
         color="Queue Length",
-        color_continuous_scale=["green", "yellow", "orange", "red"],
-        title="Vehicle Queue by Direction",
+        color_continuous_scale=["#10b981", "#f59e0b", "#ef4444"],
+        title="",
         text="Queue Length"
     )
     
     fig.update_traces(
         texttemplate='%{text}',
         textposition='outside',
-        marker_line_color='rgb(8,48,107)',
-        marker_line_width=2
+        textfont=dict(color='white', size=12),
+        marker_line_color='#404040',
+        marker_line_width=1
     )
     
     fig.update_layout(
         showlegend=False,
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(size=12),
-        height=350,
-        margin=dict(l=20, r=20, t=50, b=20)
+        font=dict(color='white', size=12),
+        height=280,
+        margin=dict(l=20, r=20, t=20, b=20),
+        xaxis=dict(
+            gridcolor='rgba(64, 64, 64, 0.3)',
+            tickfont=dict(color='white')
+        ),
+        yaxis=dict(
+            gridcolor='rgba(64, 64, 64, 0.3)',
+            tickfont=dict(color='white')
+        )
     )
     
     st.plotly_chart(fig, use_container_width=True)
     
-    # Queue status indicators
+    # Modern queue status cards
     cols = st.columns(4)
-    for i, (direction, queue_len) in enumerate(zip(directions, node["queues"])):
+    for i, (direction, queue_len, icon) in enumerate(zip(directions, node["queues"], direction_icons)):
         with cols[i]:
-            status_color = get_queue_color(queue_len)
+            status_info = get_queue_status_info(queue_len)
             st.markdown(f"""
-            <div style="text-align: center; padding: 0.5rem; background: {status_color}; 
-                        border-radius: 8px; color: white; font-weight: bold;">
-                {direction}<br>
-                <span style="font-size: 1.5rem;">{queue_len}</span><br>
-                <small>{get_queue_status(queue_len)}</small>
+            <div class="queue-card queue-{status_info['class']}">
+                <div class="queue-icon">
+                    <i class="fas {icon}"></i>
+                </div>
+                <div class="queue-label">{direction}</div>
+                <div class="queue-value">{queue_len}</div>
+                <div style="color: {status_info['color']}; font-size: 0.8rem; font-weight: 600;">
+                    <i class="fas {status_info['icon']}"></i> {status_info['label']}
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
+def get_phase_info(phase):
+    """Get modern phase information with colors and icons"""
+    phase_data = {
+        0: {
+            "description": "North-South Flow Active",
+            "icon": "fas fa-arrow-up",
+            "bg_color": "rgba(16, 185, 129, 0.1)",
+            "border_color": "rgba(16, 185, 129, 0.3)",
+            "text_color": "#10b981"
+        },
+        1: {
+            "description": "East-West Flow Active", 
+            "icon": "fas fa-arrow-right",
+            "bg_color": "rgba(16, 185, 129, 0.1)",
+            "border_color": "rgba(16, 185, 129, 0.3)",
+            "text_color": "#10b981"
+        },
+        2: {
+            "description": "All Directions Stopped",
+            "icon": "fas fa-stop",
+            "bg_color": "rgba(239, 68, 68, 0.1)",
+            "border_color": "rgba(239, 68, 68, 0.3)",
+            "text_color": "#ef4444"
+        },
+        3: {
+            "description": "North-South Prepare to Stop",
+            "icon": "fas fa-exclamation-triangle",
+            "bg_color": "rgba(245, 158, 11, 0.1)",
+            "border_color": "rgba(245, 158, 11, 0.3)",
+            "text_color": "#f59e0b"
+        },
+        4: {
+            "description": "East-West Prepare to Stop",
+            "icon": "fas fa-exclamation-triangle",
+            "bg_color": "rgba(245, 158, 11, 0.1)",
+            "border_color": "rgba(245, 158, 11, 0.3)",
+            "text_color": "#f59e0b"
+        }
+    }
+    return phase_data.get(phase, phase_data[0])
+
+def get_queue_status_info(queue_len):
+    """Get queue status with modern styling info"""
+    if queue_len <= 2:
+        return {
+            "label": "Free Flow",
+            "class": "free",
+            "color": "#10b981",
+            "icon": "fa-check-circle"
+        }
+    elif queue_len <= 5:
+        return {
+            "label": "Moderate",
+            "class": "moderate", 
+            "color": "#f59e0b",
+            "icon": "fa-exclamation-circle"
+        }
+    else:
+        return {
+            "label": "Congested",
+            "class": "congested",
+            "color": "#ef4444", 
+            "icon": "fa-times-circle"
+        }
+
 def get_phase_description(phase):
-    """Get human-readable phase description"""
+    """Get human-readable phase description with icons"""
     descriptions = {
-        0: "🟢 North-South traffic flowing",
-        1: "🟢 East-West traffic flowing", 
-        2: "🔴 All directions stopped",
-        3: "🟡 North-South preparing to stop",
-        4: "🟡 East-West preparing to stop"
+        0: "North-South traffic flowing",
+        1: "East-West traffic flowing", 
+        2: "All directions stopped",
+        3: "North-South preparing to stop",
+        4: "East-West preparing to stop"
     }
     return descriptions.get(phase, f"Phase {phase}")
 
@@ -234,158 +300,210 @@ def get_queue_status(queue_len):
 def get_queue_color(queue_len):
     """Get color based on queue length"""
     if queue_len <= 2:
-        return "#4CAF50"  # Green
+        return "#10b981"  # Green
     elif queue_len <= 5:
-        return "#FF9800"  # Orange
+        return "#f59e0b"  # Yellow
     elif queue_len <= 8:
-        return "#FF5722"  # Red-orange
+        return "#ef4444"  # Red
     else:
-        return "#D32F2F"  # Red
+        return "#dc2626"  # Dark red
 
 def time_series_panel(d):
-    """Enhanced time series visualization with better styling"""
-    st.markdown("### 📈 Performance Trends")
+    """Modern dark-themed performance analytics with FontAwesome icons"""
     
     ts = d.get("time_series", {})
     if ts and ts.get("t"):
-        # Create enhanced time series plot
+        # Create modern dark-themed time series plot
         fig = go.Figure()
         
-        # Add RL performance line
+        # Add AI performance line with modern styling
         fig.add_trace(go.Scatter(
             x=ts["t"],
             y=ts["rl_avg_travel_time"],
             mode='lines+markers',
             name='AI Optimized',
-            line=dict(color='#1f77b4', width=3),
-            marker=dict(size=8, symbol='circle'),
+            line=dict(color='#4f46e5', width=3, shape='spline'),
+            marker=dict(size=8, symbol='circle', color='#4f46e5'),
             hovertemplate='<b>AI Optimized</b><br>Time: %{x}s<br>Travel Time: %{y:.1f}s<extra></extra>'
         ))
         
-        # Add baseline line
+        # Add baseline line with modern styling
         fig.add_trace(go.Scatter(
             x=ts["t"],
             y=ts["baseline_avg_travel_time"],
             mode='lines+markers',
             name='Traditional Control',
-            line=dict(color='#ff7f0e', width=3, dash='dash'),
-            marker=dict(size=8, symbol='diamond'),
+            line=dict(color='#ef4444', width=3, dash='dash', shape='spline'),
+            marker=dict(size=8, symbol='diamond', color='#ef4444'),
             hovertemplate='<b>Traditional Control</b><br>Time: %{x}s<br>Travel Time: %{y:.1f}s<extra></extra>'
         ))
         
+        # Modern dark layout
         fig.update_layout(
-            title="Travel Time Comparison",
+            title=dict(
+                text="Performance Comparison",
+                font=dict(size=16, color='white'),
+                x=0.02
+            ),
             xaxis_title="Time (seconds)",
-            yaxis_title="Average Travel Time (seconds)",
+            yaxis_title="Travel Time (seconds)",
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(size=12),
-            height=300,
+            font=dict(size=12, color='white'),
+            height=320,
             margin=dict(l=20, r=20, t=50, b=20),
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
                 y=1.02,
                 xanchor="right",
-                x=1
+                x=1,
+                font=dict(color='white')
+            ),
+            xaxis=dict(
+                gridcolor='rgba(64, 64, 64, 0.3)',
+                tickfont=dict(color='white'),
+                title=dict(font=dict(color='white'))
+            ),
+            yaxis=dict(
+                gridcolor='rgba(64, 64, 64, 0.3)', 
+                tickfont=dict(color='white'),
+                title=dict(font=dict(color='white'))
             )
         )
         
-        fig.update_xaxes(gridcolor='rgba(128,128,128,0.2)')
-        fig.update_yaxes(gridcolor='rgba(128,128,128,0.2)')
-        
         st.plotly_chart(fig, use_container_width=True)
         
-        # Performance summary
+        # Modern performance summary cards
         current_improvement = (ts["baseline_avg_travel_time"][-1] - ts["rl_avg_travel_time"][-1]) / ts["baseline_avg_travel_time"][-1] * 100
-        st.markdown(f"""
-        <div style="background: linear-gradient(90deg, #4CAF50, #45a049); 
-                    padding: 1rem; border-radius: 10px; color: white; text-align: center; margin-top: 1rem;">
-            <h4>🎯 Current AI Improvement</h4>
-            <h2>{current_improvement:.1f}%</h2>
-            <p>Faster than traditional control</p>
-        </div>
-        """, unsafe_allow_html=True)
+        avg_improvement = sum((b - r) / b * 100 for b, r in zip(ts["baseline_avg_travel_time"], ts["rl_avg_travel_time"])) / len(ts["t"])
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            improvement_class = "delta-positive" if current_improvement > 0 else "delta-negative"
+            improvement_icon = "fa-chart-line-up" if current_improvement > 0 else "fa-chart-line-down"
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas {improvement_icon}"></i>
+                </div>
+                <div class="metric-label">Current Improvement</div>
+                <div class="metric-value">{current_improvement:.1f}%</div>
+                <div class="metric-delta {improvement_class}">
+                    <i class="fas fa-rocket"></i> Real-time gain
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            avg_class = "delta-positive" if avg_improvement > 0 else "delta-negative"
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="metric-label">Average Improvement</div>
+                <div class="metric-value">{avg_improvement:.1f}%</div>
+                <div class="metric-delta {avg_class}">
+                    <i class="fas fa-medal"></i> Overall gain
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
     else:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #ffeaa7, #fab1a0); 
-                    padding: 2rem; border-radius: 15px; text-align: center; color: #2d3436;">
-            <h3>📊 Collecting Performance Data...</h3>
-            <p>Time series data will appear here once the system starts collecting metrics</p>
+        <div style="background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); 
+                    border: 1px solid #404040; border-radius: 12px; 
+                    padding: 3rem; text-align: center;">
+            <div style="font-size: 3rem; color: #f59e0b; margin-bottom: 1rem;">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 style="color: #ffffff; margin-bottom: 1rem;">Collecting Analytics Data</h3>
+            <p style="color: #9ca3af;">Performance trends will appear here once the system starts collecting metrics</p>
+            <div style="margin-top: 1.5rem;">
+                <div class="status-indicator status-warning">
+                    <i class="fas fa-hourglass-half"></i> Initializing
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
 def video_panel(d):
-    """Enhanced video/camera feed panel with better styling"""
-    st.markdown("### 📹 Live Traffic Feed")
+    """Modern dark-themed video feed panel with FontAwesome icons"""
     
     p = d.get("latest_frame_path")
     if p and Path(p).exists():
-        # Display image with enhanced styling
+        # Modern video container
         st.markdown("""
-        <style>
-        .video-container {
-            border: 3px solid #667eea;
-            border-radius: 15px;
-            padding: 1rem;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-        </style>
+        <div style="border: 2px solid #404040; border-radius: 12px; 
+                    background: linear-gradient(135deg, #1a1a1a 0%, #262626 100%); 
+                    padding: 1rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
         """, unsafe_allow_html=True)
         
-        with st.container():
-            st.markdown('<div class="video-container">', unsafe_allow_html=True)
-            st.image(Image.open(p), caption="🔴 LIVE - Real-time traffic monitoring", use_column_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-        # Add status indicators
+        st.image(Image.open(p), caption="", use_column_width=True)
+        
+        st.markdown("""
+        <div style="display: flex; justify-content: space-between; align-items: center; 
+                    margin-top: 1rem; padding: 0.75rem; background: rgba(45, 45, 45, 0.5); 
+                    border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #ef4444;">
+                <i class="fas fa-circle" style="font-size: 0.5rem; animation: pulse 2s infinite;"></i>
+                <span style="font-weight: 600;">LIVE</span>
+            </div>
+            <div style="color: #9ca3af; font-size: 0.85rem;">
+                <i class="fas fa-video"></i> Real-time traffic monitoring
+            </div>
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Modern status indicators
         col1, col2, col3 = st.columns(3)
         with col1:
             st.markdown("""
-            <div style="background: #4CAF50; padding: 0.5rem; border-radius: 8px; 
-                        text-align: center; color: white; font-weight: bold;">
-                🟢 Camera Online
+            <div class="status-indicator status-online">
+                <i class="fas fa-video"></i> Camera Online
             </div>
             """, unsafe_allow_html=True)
         with col2:
             st.markdown("""
-            <div style="background: #2196F3; padding: 0.5rem; border-radius: 8px; 
-                        text-align: center; color: white; font-weight: bold;">
-                🎥 HD Quality
+            <div class="status-indicator status-online">
+                <i class="fas fa-hd-video"></i> HD Quality
             </div>
             """, unsafe_allow_html=True)
         with col3:
             st.markdown("""
-            <div style="background: #FF9800; padding: 0.5rem; border-radius: 8px; 
-                        text-align: center; color: white; font-weight: bold;">
-                📊 AI Analysis ON
+            <div class="status-indicator status-online">
+                <i class="fas fa-brain"></i> AI Analysis
             </div>
             """, unsafe_allow_html=True)
     else:
-        # Enhanced placeholder when no video available
+        # Modern placeholder when no video available
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #636e72, #2d3436); 
-                    padding: 3rem; border-radius: 15px; text-align: center; 
-                    color: white; border: 2px dashed #74b9ff;">
-            <h2>📷 Camera Feed</h2>
-            <h4>🔄 Initializing camera connection...</h4>
-            <p>Traffic monitoring will begin shortly</p>
-            <div style="margin-top: 1rem;">
-                <span style="background: #e17055; padding: 0.3rem 1rem; 
-                            border-radius: 20px; font-size: 0.8rem;">
-                    🔴 OFFLINE
-                </span>
+        <div style="background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); 
+                    border: 2px dashed #404040; border-radius: 12px; 
+                    padding: 3rem; text-align: center; color: white;">
+            <div style="font-size: 4rem; color: #6b7280; margin-bottom: 1rem;">
+                <i class="fas fa-video-slash"></i>
+            </div>
+            <h2 style="color: #ffffff; margin-bottom: 1rem;">Camera Feed</h2>
+            <div style="color: #9ca3af; margin-bottom: 1.5rem;">
+                <i class="fas fa-spinner fa-spin"></i> Initializing camera connection...
+            </div>
+            <p style="color: #6b7280;">Traffic monitoring will begin shortly</p>
+            <div style="margin-top: 1.5rem;">
+                <div class="status-indicator status-error">
+                    <i class="fas fa-exclamation-circle"></i> OFFLINE
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
 def intersection_map(d):
     """
-    Enhanced interactive 4-road intersection map with modern styling
+    Modern dark-themed interactive 4-road intersection map with FontAwesome icons
     """
-    st.markdown("### 🗺️ Smart Intersection Map")
     
     # Get intersection data
     selected_int = d.get("selected_intersection", list(d["intersections"].keys())[0])
@@ -396,19 +514,19 @@ def intersection_map(d):
     queues = intersection_data["queues"]
     current_phase = intersection_data["current_phase"]
     
-    # Define traffic light phases with enhanced colors
+    # Modern traffic light phases with better colors
     traffic_light_colors = {
-        0: {"NS": "#4CAF50", "EW": "#F44336"},  # Green, Red
-        1: {"NS": "#F44336", "EW": "#4CAF50"},  # Red, Green
-        2: {"NS": "#F44336", "EW": "#F44336"},  # Red, Red
-        3: {"NS": "#FFC107", "EW": "#F44336"},  # Yellow, Red
-        4: {"NS": "#F44336", "EW": "#FFC107"}   # Red, Yellow
+        0: {"NS": "#10b981", "EW": "#ef4444"},  # Green, Red
+        1: {"NS": "#ef4444", "EW": "#10b981"},  # Red, Green
+        2: {"NS": "#ef4444", "EW": "#ef4444"},  # Red, Red
+        3: {"NS": "#f59e0b", "EW": "#ef4444"},  # Yellow, Red
+        4: {"NS": "#ef4444", "EW": "#f59e0b"}   # Red, Yellow
     }
     
     # Get current light colors
-    lights = traffic_light_colors.get(current_phase, {"NS": "#F44336", "EW": "#F44336"})
+    lights = traffic_light_colors.get(current_phase, {"NS": "#ef4444", "EW": "#ef4444"})
     
-    # Create enhanced figure with better styling
+    # Create modern dark-themed figure
     fig = go.Figure()
     
     # Define intersection parameters
@@ -416,178 +534,143 @@ def intersection_map(d):
     road_width = 0.4
     road_length = 2.5
     
-    # Enhanced color scale with better gradients
-    def get_road_color(queue_length):
-        colors = {
-            "low": "#4CAF50",      # Green - free flow
-            "medium": "#FFC107",    # Yellow - moderate
-            "high": "#FF9800",     # Orange - congested
-            "severe": "#F44336"    # Red - severe congestion
-        }
-        
+    # Modern color scale for roads
+    def get_modern_road_color(queue_length):
         if queue_length <= 2:
-            return colors["low"]
+            return "#10b981"      # Green - free flow
         elif queue_length <= 5:
-            return colors["medium"]
+            return "#f59e0b"      # Yellow - moderate
         elif queue_length <= 8:
-            return colors["high"]
+            return "#ef4444"      # Red - congested
         else:
-            return colors["severe"]
+            return "#dc2626"      # Dark red - severe
     
-    # Enhanced road drawing with shadows and better styling
+    # Enhanced road configurations
     road_configs = [
-        # (x0, y0, x1, y1, direction)
         (center_x - road_width/2, center_y, center_x + road_width/2, center_y + road_length, "North"),
         (center_x, center_y - road_width/2, center_x + road_length, center_y + road_width/2, "East"),
         (center_x - road_width/2, center_y - road_length, center_x + road_width/2, center_y, "South"),
         (center_x - road_length, center_y - road_width/2, center_x, center_y + road_width/2, "West")
     ]
     
-    # Draw roads with enhanced styling
+    # Draw roads with modern styling and shadows
     for i, (x0, y0, x1, y1, direction) in enumerate(road_configs):
-        road_color = get_road_color(queues[i])
+        road_color = get_modern_road_color(queues[i])
         
-        # Add road shadow
+        # Add subtle road shadow
         fig.add_shape(
             type="rect",
-            x0=x0+0.05, y0=y0-0.05, x1=x1+0.05, y1=y1-0.05,
-            fillcolor="rgba(0,0,0,0.2)", line=dict(width=0)
+            x0=x0+0.03, y0=y0-0.03, x1=x1+0.03, y1=y1-0.03,
+            fillcolor="rgba(0,0,0,0.3)", line=dict(width=0)
         )
         
-        # Add main road
+        # Add main road with gradient effect
         fig.add_shape(
             type="rect",
             x0=x0, y0=y0, x1=x1, y1=y1,
             fillcolor=road_color, opacity=0.8,
-            line=dict(color="#2c3e50", width=3)
+            line=dict(color="#1a1a1a", width=2)
         )
         
-        # Add road markings (center line)
+        # Add modern road markings
         if direction in ["North", "South"]:
+            # Center dashed line
             fig.add_shape(
                 type="line",
                 x0=center_x, y0=y0, x1=center_x, y1=y1,
-                line=dict(color="white", width=2, dash="dash")
+                line=dict(color="white", width=2, dash="dot")
             )
         else:
             fig.add_shape(
                 type="line",
                 x0=x0, y0=center_y, x1=x1, y1=center_y,
-                line=dict(color="white", width=2, dash="dash")
+                line=dict(color="white", width=2, dash="dot")
             )
     
-    # Enhanced intersection center
+    # Modern intersection center
     fig.add_shape(
         type="rect",
         x0=center_x - road_width/2, y0=center_y - road_width/2,
         x1=center_x + road_width/2, y1=center_y + road_width/2,
-        fillcolor="#34495e", opacity=0.9,
-        line=dict(color="#2c3e50", width=3)
+        fillcolor="#1a1a1a", opacity=0.9,
+        line=dict(color="#404040", width=2)
     )
     
-    # Add crosswalk markings
-    crosswalk_configs = [
-        (center_x - road_width/2 - 0.1, center_y + road_width/2, center_x - road_width/2, center_y + road_width/2 + 0.2),
-        (center_x + road_width/2, center_y + road_width/2, center_x + road_width/2 + 0.1, center_y + road_width/2 + 0.2),
-        (center_x + road_width/2, center_y - road_width/2 - 0.2, center_x + road_width/2 + 0.1, center_y - road_width/2),
-        (center_x - road_width/2 - 0.1, center_y - road_width/2 - 0.2, center_x - road_width/2, center_y - road_width/2)
-    ]
-    
-    for x0, y0, x1, y1 in crosswalk_configs:
-        for i in range(5):
-            offset = i * 0.04
-            fig.add_shape(
-                type="line",
-                x0=x0 + (offset if abs(x1-x0) > abs(y1-y0) else 0), 
-                y0=y0 + (offset if abs(y1-y0) > abs(x1-x0) else 0),
-                x1=x1 + (offset if abs(x1-x0) > abs(y1-y0) else 0), 
-                y1=y1 + (offset if abs(y1-y0) > abs(x1-x0) else 0),
-                line=dict(color="white", width=3)
-            )
-    
-    # Enhanced traffic lights with realistic positioning
-    light_size = 0.12
+    # Modern traffic lights with better positioning
+    light_size = 0.15
     light_positions = [
-        (center_x - road_width/2 - light_size*1.5, center_y + road_width/2 + light_size/2, lights["NS"], "North"),
-        (center_x + road_width/2 + light_size/2, center_y + road_width/2 + light_size*1.5, lights["EW"], "East"),
-        (center_x + road_width/2 + light_size*1.5, center_y - road_width/2 - light_size/2, lights["NS"], "South"),
-        (center_x - road_width/2 - light_size/2, center_y - road_width/2 - light_size*1.5, lights["EW"], "West")
+        (center_x - road_width/2 - light_size*1.2, center_y + road_width/2 + light_size/2, lights["NS"], "North"),
+        (center_x + road_width/2 + light_size/2, center_y + road_width/2 + light_size*1.2, lights["EW"], "East"),
+        (center_x + road_width/2 + light_size*1.2, center_y - road_width/2 - light_size/2, lights["NS"], "South"),
+        (center_x - road_width/2 - light_size/2, center_y - road_width/2 - light_size*1.2, lights["EW"], "West")
     ]
     
     for x, y, color, direction in light_positions:
-        # Traffic light pole
+        # Modern traffic light pole
         fig.add_shape(
             type="rect",
-            x0=x - light_size/4, y0=y - light_size*2, x1=x + light_size/4, y1=y + light_size,
-            fillcolor="#2c3e50", line=dict(color="#34495e", width=1)
+            x0=x - light_size/6, y0=y - light_size*1.5, x1=x + light_size/6, y1=y + light_size/2,
+            fillcolor="#2d2d2d", line=dict(color="#404040", width=1)
         )
         
-        # Traffic light housing
+        # Modern traffic light housing with shadow
         fig.add_shape(
             type="rect",
             x0=x - light_size/2, y0=y - light_size/2, x1=x + light_size/2, y1=y + light_size/2,
-            fillcolor="#2c3e50", line=dict(color="#34495e", width=2)
+            fillcolor="#1a1a1a", line=dict(color="#404040", width=2)
         )
         
-        # Active light
+        # Active light with glow effect
         fig.add_shape(
             type="circle",
             x0=x - light_size/3, y0=y - light_size/3, x1=x + light_size/3, y1=y + light_size/3,
             fillcolor=color, opacity=0.9,
-            line=dict(color="white", width=2)
+            line=dict(color="white", width=1)
         )
     
-    # Enhanced annotations with better styling
+    # Modern annotations with dark theme
     directions = ["NORTH", "EAST", "SOUTH", "WEST"]
-    positions = [(0, 2.0), (2.0, 0.3), (0, -2.0), (-2.0, 0.3)]
+    positions = [(0, 2.2), (2.2, 0.3), (0, -2.2), (-2.2, 0.3)]
     
     for i, (direction, (x, y)) in enumerate(zip(directions, positions)):
-        queue_status = get_queue_status(queues[i])
-        status_color = get_queue_color(queues[i])
+        queue_status_info = get_queue_status_info(queues[i])
         
         fig.add_annotation(
             x=x, y=y, 
-            text=f"<b>{direction}</b><br>Queue: {queues[i]} vehicles<br><span style='color:{status_color}'>{queue_status}</span>",
+            text=f"<b>{direction}</b><br>Queue: {queues[i]} vehicles<br><span style='color:{queue_status_info['color']}'>{queue_status_info['label']}</span>",
             showarrow=True,
             arrowhead=2,
             arrowsize=1,
             arrowwidth=2,
-            arrowcolor="#2c3e50",
-            ax=0, ay=-30 if direction in ["NORTH", "SOUTH"] else (-30 if direction == "WEST" else 30),
-            bgcolor="white",
-            bordercolor="#2c3e50",
-            borderwidth=2,
+            arrowcolor="#4f46e5",
+            ax=0, ay=-25 if direction in ["NORTH", "SOUTH"] else (-25 if direction == "WEST" else 25),
+            bgcolor="rgba(26, 26, 26, 0.95)",
+            bordercolor="#4f46e5",
+            borderwidth=1,
             borderpad=8,
-            font=dict(size=11, color="#2c3e50")
+            font=dict(size=10, color="white")
         )
     
-    # Enhanced phase information
-    phase_names = {
-        0: "🟢 North-South Flow",
-        1: "🟢 East-West Flow", 
-        2: "🔴 All-Way Stop",
-        3: "🟡 North-South Caution",
-        4: "🟡 East-West Caution"
-    }
-    current_phase_name = phase_names.get(current_phase, f"Phase {current_phase}")
+    # Modern phase information
+    phase_info = get_phase_info(current_phase)
     
     fig.add_annotation(
-        x=0, y=-3.2, 
-        text=f"<b>Current Phase: {current_phase_name}</b><br>Intersection: {intersection_name}",
+        x=0, y=-3.0, 
+        text=f"<b>{phase_info['description']}</b><br>{intersection_name}",
         showarrow=False, 
-        font=dict(size=14, color="white"),
-        bgcolor="rgba(44, 62, 80, 0.9)",
-        bordercolor="#3498db",
+        font=dict(size=12, color="white"),
+        bgcolor="rgba(26, 26, 26, 0.9)",
+        bordercolor=phase_info['border_color'].replace('rgba', 'rgb').replace(', 0.3)', ')'),
         borderwidth=2,
         borderpad=10
     )
     
-    # Enhanced layout configuration
+    # Modern dark layout
     fig.update_layout(
         title=dict(
-            text=f"<b>🚦 {intersection_name}</b>",
+            text=f"<b>Smart Intersection: {intersection_name}</b>",
             x=0.5,
-            font=dict(size=20, color="#2c3e50")
+            font=dict(size=18, color="white")
         ),
         xaxis=dict(
             range=[-3, 3], 
@@ -604,67 +687,79 @@ def intersection_map(d):
             fixedrange=True
         ),
         showlegend=False,
-        plot_bgcolor="#ecf0f1",
-        paper_bgcolor="white",
-        height=600,
+        plot_bgcolor="#1a1a1a",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=550,
         margin=dict(l=10, r=10, t=60, b=10)
     )
     
-    # Display the enhanced plot
+    # Display the modern plot
     st.plotly_chart(fig, use_container_width=True)
     
-    # Enhanced legend and statistics
+    # Modern statistics cards
     col1, col2 = st.columns([1, 1])
     
     with col1:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); 
-                    padding: 1rem; border-radius: 10px; color: white;">
-            <h4>🚦 Traffic Status Legend</h4>
-            <div style="margin: 0.5rem 0;">🟢 <strong>Free Flow:</strong> ≤2 vehicles</div>
-            <div style="margin: 0.5rem 0;">🟡 <strong>Moderate:</strong> 3-5 vehicles</div>
-            <div style="margin: 0.5rem 0;">🟠 <strong>Congested:</strong> 6-8 vehicles</div>
-            <div style="margin: 0.5rem 0;">🔴 <strong>Severe:</strong> >8 vehicles</div>
+        <div class="metric-card">
+            <div style="margin-bottom: 1rem;">
+                <h4 style="color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-info-circle"></i> Traffic Status Legend
+                </h4>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 16px; height: 16px; background: #10b981; border-radius: 4px;"></div>
+                    <span style="color: #9ca3af;">Free Flow (≤2 vehicles)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 16px; height: 16px; background: #f59e0b; border-radius: 4px;"></div>
+                    <span style="color: #9ca3af;">Moderate (3-5 vehicles)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 16px; height: 16px; background: #ef4444; border-radius: 4px;"></div>
+                    <span style="color: #9ca3af;">Congested (6+ vehicles)</span>
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         total_vehicles = sum(queues)
         avg_queue = total_vehicles / 4
+        peak_direction = directions[queues.index(max(queues))]
+        
         st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #fd79a8, #e84393); 
-                    padding: 1rem; border-radius: 10px; color: white;">
-            <h4>📊 Intersection Statistics</h4>
-            <div style="margin: 0.5rem 0;"><strong>Total Queued:</strong> {total_vehicles} vehicles</div>
-            <div style="margin: 0.5rem 0;"><strong>Average Queue:</strong> {avg_queue:.1f} vehicles</div>
-            <div style="margin: 0.5rem 0;"><strong>Peak Direction:</strong> {directions[queues.index(max(queues))]}</div>
-            <div style="margin: 0.5rem 0;"><strong>Status:</strong> {get_intersection_status(avg_queue)}</div>
+        <div class="metric-card">
+            <div style="margin-bottom: 1rem;">
+                <h4 style="color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-bar"></i> Intersection Stats
+                </h4>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; color: #9ca3af;">
+                <div>
+                    <div style="color: #ffffff; font-size: 1.5rem; font-weight: 700;">{total_vehicles}</div>
+                    <div style="font-size: 0.8rem;">Total Queued</div>
+                </div>
+                <div>
+                    <div style="color: #ffffff; font-size: 1.5rem; font-weight: 700;">{avg_queue:.1f}</div>
+                    <div style="font-size: 0.8rem;">Average Queue</div>
+                </div>
+                <div style="grid-column: span 2;">
+                    <div style="color: #4f46e5; font-weight: 600;">Peak: {peak_direction}</div>
+                    <div style="color: {get_queue_status_info(avg_queue)['color']}; font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas {get_queue_status_info(avg_queue)['icon']}"></i> {get_intersection_status(avg_queue)}
+                    </div>
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Real-time queue metrics
-    st.markdown("### 📈 Real-time Queue Metrics")
-    directions = ["North", "East", "South", "West"]
-    cols = st.columns(4)
-    for i, (direction, queue_len) in enumerate(zip(directions, queues)):
-        with cols[i]:
-            status_color = get_queue_color(queue_len)
-            trend_icon = "📈" if queue_len > avg_queue else "📉" if queue_len < avg_queue else "➡️"
-            st.markdown(f"""
-            <div style="text-align: center; padding: 1rem; background: {status_color}; 
-                        border-radius: 10px; color: white; font-weight: bold; 
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <h4>{direction}</h4>
-                <h2>{queue_len}</h2>
-                <p>{get_queue_status(queue_len)} {trend_icon}</p>
-            </div>
-            """, unsafe_allow_html=True)
 
 def get_intersection_status(avg_queue):
-    """Get overall intersection status"""
+    """Get overall intersection status with modern styling"""
     if avg_queue <= 3:
-        return "🟢 Optimal"
+        return "Optimal Flow"
     elif avg_queue <= 6:
-        return "🟡 Moderate"
+        return "Moderate Traffic"
     else:
-        return "🔴 Congested"
+        return "Heavy Congestion"
