@@ -1,0 +1,9 @@
+streamlit==1.38.0
+pandas==2.2.2
+numpy==1.26.4
+plotly==5.24.1
+# For RL API imports if used directly in dashboard
+gymnasium==0.29.1
+# torch optional (RL runs loaded in separate repo). Install CPU build by default.
+torch==2.3.1; platform_system != 'Windows'  # optional
+

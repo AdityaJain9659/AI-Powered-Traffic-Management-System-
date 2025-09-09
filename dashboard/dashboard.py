@@ -76,3 +76,9 @@ with tab3:
     render_section_header("fa-chart-area", "AI Performance Analytics")
     time_series_panel(data)
     st.markdown('</div>', unsafe_allow_html=True)
+
+def render_sidebar_links():
+	st.sidebar.markdown("---")
+	st.sidebar.subheader("RL Demo")
+	st.sidebar.caption("Run the RL demo in the main app: app.py")
+	st.sidebar.code("streamlit run app.py")
