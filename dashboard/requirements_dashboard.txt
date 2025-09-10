@@ -1,0 +1,29 @@
+# Streamlit Dashboard Requirements
+streamlit>=1.28.0
+plotly>=5.15.0
+pandas>=2.0.0
+numpy>=1.24.0
+
+# SUMO Integration (optional - fallback available)
+# traci>=1.19.0
+# sumolib>=1.19.0
+
+# Real-time data processing
+python-dateutil>=2.8.0
+
+# UI/UX enhancements (optional - fallback available)
+# streamlit-autorefresh>=0.0.1
+# streamlit-aggrid>=0.3.4
+# streamlit-elements>=0.1.0
+
+# Data handling
+jsonschema>=4.17.0
+
+# System monitoring (optional)
+# psutil>=5.9.0
+
+# Optional: For advanced features
+# opencv-python>=4.8.0  # For camera simulation
+Pillow>=9.5.0  # Image processing
+requests>=2.31.0  # HTTP requests
+# websockets>=11.0  # Real-time communication

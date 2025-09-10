@@ -101,11 +101,21 @@ def render_data_loading_placeholder():
         <div style="font-size: 4rem; color: #f59e0b; margin-bottom: 1rem;">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <h2 style="color: #ffffff; margin-bottom: 1rem;">System Initializing</h2>
+        <h2 style="color: #ffffff; margin-bottom: 1rem;">No Data Available</h2>
         <div style="color: #9ca3af; margin-bottom: 2rem;">
-            <i class="fas fa-spinner fa-spin"></i> Waiting for data stream...
+            <i class="fas fa-database"></i> Waiting for simulation data...
         </div>
-        <p style="color: #6b7280;">The AI traffic management system is starting up. Data will appear shortly.</p>
+        <p style="color: #6b7280;">
+            Start a SUMO simulation for real-time data, or ensure dashboard_data.json exists for demo mode.
+        </p>
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); 
+                    border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2);">
+            <strong style="color: #3b82f6;">Quick Start:</strong><br>
+            <small style="color: #9ca3af;">
+                1. Use the System Control tab to start a SUMO simulation<br>
+                2. Or run the dashboard launcher: <code>python run_dashboard.py</code>
+            </small>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
